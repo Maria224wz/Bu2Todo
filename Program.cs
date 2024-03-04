@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BU2Todo;
 
@@ -10,6 +11,13 @@ public class Program
 
         builder.Services.AddControllers();
 
+        builder.Services.AddDbContext<ApplicationContext>(options =>
+        {
+            options.UseNpgsql(
+                "Host=localhost;Database=todoapp;Username=postgres;Password=password"
+            );
+        });
+
         var app = builder.Build();
 
         app.UseHttpsRedirection();
@@ -20,4 +28,6 @@ public class Program
 
         app.Run();
     }
+
+
 }
