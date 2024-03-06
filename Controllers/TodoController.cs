@@ -1,10 +1,10 @@
 namespace BU2Todo;
 
-
 public class CreateTodoDto
 {
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
+
 }
 public class TodoDto
 {
@@ -19,5 +19,11 @@ public class TodoDto
     public DateTime CreatedDate { get; set; }
 
     public DateTime DueDate { get; set; }
+
+    public TodoDto(Todo todo)
+    {
+        this.Title = todo.Title;
+        this.Description = todo.Description;
+    }
 
 }
