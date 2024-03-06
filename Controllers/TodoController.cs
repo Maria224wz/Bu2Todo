@@ -1,29 +1,54 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace BU2Todo;
 
-public class CreateTodoDto
+[ApiController]
+[Route("todo")]
+public class TodoController : ControllerBase
 {
-    public string Title { get; set; } = "";
-    public string Description { get; set; } = "";
+    private readonly ApplicationContext context;
+    private readonly TodoService todoService;
 
-}
-public class TodoDto
-{
-    public Guid Id { get; set; }
-
-    public string Title { get; set; } = "";
-
-    public string Description { get; set; } = "";
-
-    public bool Completed = false;
-
-    public DateTime CreatedDate { get; set; }
-
-    public DateTime DueDate { get; set; }
-
-    public TodoDto(Todo todo)
+    public TodoController(ApplicationContext context, TodoService todoService)
     {
-        this.Title = todo.Title;
-        this.Description = todo.Description;
+        this.context = context;
+        this.todoService = todoService;
     }
 
+    [HttpPost]
+    public IActionResult CreateTodo([FromQuery] string title, [FromQuery] string description)
+    {
+        var todo = todoService.CreateTodos(title, description);
+        todo.Title = title;
+        todo.Description = description;
+        return Ok();
+    }
+
+    public class CreateTodoDto
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+
+    }
+    public class TodoDto
+    {
+        public Guid Id { get; set; }
+
+        public string Title { get; set; } = "";
+
+        public string Description { get; set; } = "";
+
+        public bool Completed = false;
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime DueDate { get; set; }
+
+        public TodoDto(Todo todo)
+        {
+            this.Title = todo.Title;
+            this.Description = todo.Description;
+        }
+
+    }
 }
