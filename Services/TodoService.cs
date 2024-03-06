@@ -9,7 +9,7 @@ public class TodoService
         this.context = context;
     }
 
-    public Todo CreateTodo(string title, string description)
+    public Todo CreateTodos(string title, string description)
     {
 
         if (string.IsNullOrWhiteSpace(title))
