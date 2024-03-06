@@ -1,6 +1,5 @@
 namespace BU2Todo;
 
-
 public class CreateTodoDto
 {
     public string Title { get; set; } = "";

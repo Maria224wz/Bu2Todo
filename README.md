@@ -10,6 +10,7 @@ Todo app created in BU2
 TODO:
 
 1. DbContext // done
-2. Controllers
-3. Endpoints
-4. Testing
+2. Controllers ( In progress)
+3. Services
+4. Endpoints
+5. Testing
