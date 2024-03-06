@@ -9,7 +9,7 @@ Todo app created in BU2
 
 TODO:
 
-1. Controllers
-2. Endpoints
-3. Testing
-4. Database
+1. DbContext // done
+2. Controllers
+3. Endpoints
+4. Testing
