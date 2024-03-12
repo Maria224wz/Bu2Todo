@@ -1,3 +1,4 @@
+
 namespace BU2Todo;
 
 public class TodoService
@@ -34,4 +35,11 @@ public class TodoService
         return todo;
     }
 
+    public void DeleteAllTodos()
+    {
+        var todosToRemove = context.Todos.ToList();
+        context.Todos.RemoveRange(todosToRemove);
+        context.SaveChanges();
+    }
 }
+

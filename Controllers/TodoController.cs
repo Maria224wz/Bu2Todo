@@ -31,6 +31,12 @@ public class TodoController : ControllerBase
         return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList();
     }
 
+    [HttpDelete]
+    public IActionResult RemoveAllTodos()       // Lägg till authorization för admin
+    {
+        todoService.DeleteAllTodos();
+        return Ok("Removed all todos");
+    }
 
     public class TodoDto
     {
