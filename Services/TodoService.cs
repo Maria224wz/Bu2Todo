@@ -9,7 +9,7 @@ public class TodoService
         this.context = context;
     }
 
-    public Todo CreateTodos(string title, string description)
+    public Todo CreateTodos(string title, string description, string duedate)
     {
 
         if (string.IsNullOrWhiteSpace(title))
@@ -25,9 +25,9 @@ public class TodoService
         var todo = new Todo
         {
             Title = title,
-            Description = description
+            Description = description,
+            DueDate = duedate
         };
-
         context.Todos.Add(todo);
         context.SaveChanges();
 

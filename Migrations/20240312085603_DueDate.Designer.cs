@@ -3,6 +3,7 @@ using System;
 using BU2Todo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BU2Todo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240312085603_DueDate")]
+    partial class DueDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,14 +49,9 @@ namespace BU2Todo.Migrations
                     b.Property<Guid?>("TodoListId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TodoListId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Todos");
                 });
@@ -270,10 +268,6 @@ namespace BU2Todo.Migrations
                     b.HasOne("BU2Todo.TodoList", null)
                         .WithMany("TodoItems")
                         .HasForeignKey("TodoListId");
-
-                    b.HasOne("BU2Todo.User", null)
-                        .WithMany("TodoItems")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -328,11 +322,6 @@ namespace BU2Todo.Migrations
                 });
 
             modelBuilder.Entity("BU2Todo.TodoList", b =>
-                {
-                    b.Navigation("TodoItems");
-                });
-
-            modelBuilder.Entity("BU2Todo.User", b =>
                 {
                     b.Navigation("TodoItems");
                 });

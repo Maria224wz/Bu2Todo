@@ -12,6 +12,7 @@ public class Todo
 
     public DateTime CreatedDate { get; set; }
 
-    public DateTime DueDate { get; set; }
+    public string DueDate { get; set; } = "";     // Representera som sträng istället?
+
 
 }
