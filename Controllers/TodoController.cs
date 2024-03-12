@@ -16,20 +16,28 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateTodo([FromQuery] string title, [FromQuery] string description)
+    public IActionResult CreateTodo([FromQuery] string title, [FromQuery] string description, [FromQuery] string duedate)
     {
-        var todo = todoService.CreateTodos(title, description);
+        Todo todo = todoService.CreateTodos(title, description, duedate);
         todo.Title = title;
         todo.Description = description;
-        return Ok();
+        todo.DueDate = duedate;
+        return Ok(new TodoDto(todo));   // Try catch felhantering?
     }
 
-    public class CreateTodoDto
+    [HttpGet]       // Hämtar alla oavsett user, lägg till authorization för admin
+    public List<TodoDto> GetAllTodos()
     {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-
+        return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList();
     }
+
+    [HttpDelete]
+    public IActionResult RemoveAllTodos()       // Lägg till authorization för admin
+    {
+        todoService.DeleteAllTodos();
+        return Ok("Removed all todos");
+    }
+
     public class TodoDto
     {
         public Guid Id { get; set; }
@@ -42,12 +50,15 @@ public class TodoController : ControllerBase
 
         public DateTime CreatedDate { get; set; }
 
-        public DateTime DueDate { get; set; }
+        public string DueDate { get; set; } = "";
 
         public TodoDto(Todo todo)
         {
             this.Title = todo.Title;
             this.Description = todo.Description;
+            this.Id = todo.Id;
+            this.CreatedDate = DateTime.Now;        // fixa utskriften till endast år / månad / dag / tid
+            this.DueDate = todo.DueDate;
         }
 
     }

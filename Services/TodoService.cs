@@ -1,3 +1,4 @@
+
 namespace BU2Todo;
 
 public class TodoService
@@ -9,7 +10,7 @@ public class TodoService
         this.context = context;
     }
 
-    public Todo CreateTodos(string title, string description)
+    public Todo CreateTodos(string title, string description, string duedate)
     {
 
         if (string.IsNullOrWhiteSpace(title))
@@ -25,13 +26,20 @@ public class TodoService
         var todo = new Todo
         {
             Title = title,
-            Description = description
+            Description = description,
+            DueDate = duedate
         };
-
         context.Todos.Add(todo);
         context.SaveChanges();
 
         return todo;
     }
 
+    public void DeleteAllTodos()
+    {
+        var todosToRemove = context.Todos.ToList();
+        context.Todos.RemoveRange(todosToRemove);
+        context.SaveChanges();
+    }
 }
+
