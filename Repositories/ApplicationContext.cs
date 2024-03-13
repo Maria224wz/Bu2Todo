@@ -6,7 +6,7 @@ namespace BU2Todo;
 public class ApplicationContext : IdentityDbContext<User>
 {
     public DbSet<Todo> Todos { get; set; }
-    public DbSet<TodoList> TodoLists { get; set; }
+    public DbSet<TodoList> TodoItems { get; set; }
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 

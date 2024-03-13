@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BU2Todo;
@@ -22,16 +24,19 @@ public class TodoController : ControllerBase
         todo.Title = title;
         todo.Description = description;
         todo.DueDate = duedate;
+
         return Ok(new TodoDto(todo));   // Try catch felhantering?
     }
 
     [HttpGet]       // Hämtar alla oavsett user, lägg till authorization för admin
+    [Authorize("GetAllTodos")]
     public List<TodoDto> GetAllTodos()
     {
         return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList();
     }
 
     [HttpDelete]
+    [Authorize("Admin")]
     public IActionResult RemoveAllTodos()       // Lägg till authorization för admin
     {
         todoService.DeleteAllTodos();
