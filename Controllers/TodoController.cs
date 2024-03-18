@@ -1,6 +1,8 @@
+
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace BU2Todo;
 
@@ -17,29 +19,41 @@ public class TodoController : ControllerBase // ärver från controller base
         this.todoService = todoService; // tilldela todoservice till todoservice variabeln
     }
 
+
     [HttpPost]
+    [Authorize("")]
     public IActionResult CreateTodo([FromQuery] string title, [FromQuery] string description, [FromQuery] string duedate) // 
     {
-          // Hämta användarens id från ClaimsPrincipal
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+          // Hämta användarens id från ClaimsPrincipal - genom claimtypes så läggs info om token värdet in som gör att man kan sedan hämta användarobjektet genom att komma åt id't. Det hämtas sedan från servicen i createtodo.
+              User? user = context.Users.Find(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            Todo todo = todoService.CreateTodos(title, description, duedate);
+            todo.User = user;
+            user.TodoItems.Add(todo);
 
-            // Skapa todo för den aktuella användaren
-             Todo todo = todoService.CreateTodos(title, description, duedate, userId);
+            context.Todos.Add(todo);
+            context.SaveChanges();
 
-        // Todo todo = todoService.CreateTodos(title, description, duedate);
-        // todo.Title = title;
-        // todo.Description = description;
-        // todo.DueDate = duedate;
+        // tilldela en todo till användaren
+       
+        //  todo.Title = title;
+        //  todo.Description = description;
+        //  todo.DueDate = duedate;
         
+         
+    
 
         return Ok(new TodoDto(todo));   // ok med nya todo som en dto// Try catch felhantering?
     }
+
+
 
     [HttpGet]       // Hämtar alla oavsett user, lägg till authorization för admin
     [Authorize("GetAllTodos")]
     //[AllowAnonymous]
     public List<TodoDto> GetAllTodos() // hämta alla todos
     {
+
         return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList(); // hämta alla todos från db och konvertera dem som en dto
     }
 
@@ -66,6 +80,8 @@ public class TodoController : ControllerBase // ärver från controller base
 
         public string DueDate { get; set; } = "";
 
+        
+
         public TodoDto(Todo todo)
         { // konstruktor som tar en todo som en parameter och skapar en dto från den och tilldelar titel, descriptioin, id etc.. 
             this.Title = todo.Title;
@@ -73,6 +89,7 @@ public class TodoController : ControllerBase // ärver från controller base
             this.Id = todo.Id;
             this.CreatedDate = DateTime.Now;        // fixa utskriften till endast år / månad / dag / tid
             this.DueDate = todo.DueDate;
+           
             
         }
 

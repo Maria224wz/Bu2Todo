@@ -14,3 +14,9 @@ TODO:
 3. Services
 4. Endpoints
 5. Testing
+
+// Maria anteckningar
+// Lägga till user id till alla todos så man ser vilken user som är inloggad
+// roller
+// updatera todos httpPut
+// fler endpoints

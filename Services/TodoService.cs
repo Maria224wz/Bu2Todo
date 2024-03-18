@@ -1,4 +1,4 @@
-
+using System.Security.Claims;
 namespace BU2Todo;
 
 public class TodoService
@@ -10,10 +10,10 @@ public class TodoService
         this.context = context; // tilldelar app context till variabeln context
     }
  
-    public Todo CreateTodos(string title, string description, string duedate, string? userId) // skapa ny todo
+    public Todo CreateTodos(string title, string description, string duedate) // skapa ny todo
     {
 
-        if (string.IsNullOrWhiteSpace(title)) // felhanftering
+        if (string.IsNullOrWhiteSpace(title)) // felhantering
         {
             throw new Exception("Title cannot be null or whitespace!");
         }
@@ -23,13 +23,25 @@ public class TodoService
             throw new Exception("Description cannot be null or whitespace!");
         }
 
+    //      // Hämta användaren från databasen baserat på användar-ID- där Users innehåller info automatiskt om användaren
+    //    User? user = context.Users.Find(User);
+
+    // if (user == null)
+    // {
+    //     throw new ArgumentException("User not found!");
+    // }     
+
         var todo = new Todo
         { // ny todo skapas med angivna uppgifter
             Title = title,
             Description = description,
-            DueDate = duedate
+            DueDate = duedate,
+            
+            
         };
         context.Todos.Add(todo); // lägg till nya i databasen
+        //user.Todos.Add(todo); // Spara listan så att user kommer med i todo
+        // context.user.Add(todo);
         context.SaveChanges(); // spara ändringar till databasen
 
         return todo; // returnerar den nya todon

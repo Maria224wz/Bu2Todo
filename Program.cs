@@ -41,20 +41,6 @@ public class Program
         SetupSecurity(builder); // konfigurera säkerhet 
         builder.Services.AddScoped<TodoService, TodoService>();
 
-        // builder.Services.AddDbContext<ApplicationContext>(options =>
-        // { // tjänst för app context med anslutningssträng
-        //     options.UseNpgsql(
-        //         "Host=localhost;Database=todoapp;Username=postgres;Password=password"
-        //     );
-        // });
-
-        // builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme); // token autentifiering läggs till
-
-        // builder.Services
-        // // .AddIdentityCore<User>()
-        // .AddEntityFrameworkStores<ApplicationContext>()
-        // .AddApiEndpoints();
-
         var app = builder.Build();
 
         app.MapIdentityApi<User>();
@@ -62,7 +48,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthentication();
-        app.UseAuthorization(); // autentifiering och authentisering för behöringhetskontroller
+        app.UseAuthorization(); // autentifiering och authentisering för behöringhetskontroller, authentication ska ligga först
        
 
         app.MapControllers();

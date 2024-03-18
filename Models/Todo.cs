@@ -14,5 +14,6 @@ public class Todo
 
     public string DueDate { get; set; } = "";     // Representera som sträng istället?
 
+    public User? User {get; set;} = null;
 
 }
