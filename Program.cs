@@ -33,6 +33,12 @@ public class Program
             {
                 policy.RequireAuthenticatedUser();
             });
+
+            options.AddPolicy("UserAddTodo", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                
+            });
         });
 
         builder.Services.AddControllers(); // controllers för att hantera http androp
