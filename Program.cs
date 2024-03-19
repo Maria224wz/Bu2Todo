@@ -38,13 +38,13 @@ public class Program
             options.AddPolicy("UserAddTodo", policy =>
             {
                 policy.RequireAuthenticatedUser();
-                
+
             });
         });
 
         builder.Services.AddControllers(); // controllers för att hantera http androp
-          
-           builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
+
+        builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
 
         SetupSecurity(builder); // konfigurera säkerhet 
         builder.Services.AddScoped<TodoService, TodoService>();
@@ -57,7 +57,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization(); // autentifiering och authentisering för behöringhetskontroller, authentication ska ligga först
-       
+
 
         app.MapControllers();
 
@@ -75,14 +75,14 @@ public class Program
     }
 }
 
-    public class UserClaimsTransformation : IClaimsTransformation
-    {
-    readonly UserManager<User> userManager; 
+public class UserClaimsTransformation : IClaimsTransformation
+{
+    readonly UserManager<User> userManager;
 
-        public UserClaimsTransformation(UserManager<User> userManager)
-        {
-            this.userManager = userManager;
-        }
+    public UserClaimsTransformation(UserManager<User> userManager)
+    {
+        this.userManager = userManager;
+    }
 
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
@@ -106,4 +106,4 @@ public class Program
         return await Task.FromResult(principal);
     }
 
- }
+}

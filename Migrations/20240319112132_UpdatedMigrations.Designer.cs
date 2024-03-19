@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BU2Todo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240313083008_AddUsers")]
-    partial class AddUsers
+    [Migration("20240319112132_UpdatedMigrations")]
+    partial class UpdatedMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace BU2Todo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TodoLists");
+                    b.ToTable("TodoItems");
                 });
 
             modelBuilder.Entity("BU2Todo.User", b =>
@@ -274,9 +274,11 @@ namespace BU2Todo.Migrations
                         .WithMany("TodoItems")
                         .HasForeignKey("TodoListId");
 
-                    b.HasOne("BU2Todo.User", null)
+                    b.HasOne("BU2Todo.User", "User")
                         .WithMany("TodoItems")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
