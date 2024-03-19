@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -42,7 +43,8 @@ public class Program
         });
 
         builder.Services.AddControllers(); // controllers för att hantera http androp
-          //builder.Services.AddTransient<IClaimsTransformation();
+          
+           builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
 
         SetupSecurity(builder); // konfigurera säkerhet 
         builder.Services.AddScoped<TodoService, TodoService>();
@@ -62,6 +64,7 @@ public class Program
         app.Run();
     }
 
+
     public static void SetupSecurity(WebApplicationBuilder builder)
     {
         builder.Services
@@ -69,6 +72,38 @@ public class Program
             .AddRoles<IdentityRole>() // roll tjänster
             .AddEntityFrameworkStores<ApplicationContext>() // lagra användarinfo
             .AddApiEndpoints(); // api endpoints för identity funktioner
+    }
+}
+
+    public class UserClaimsTransformation : IClaimsTransformation
+    {
+    readonly UserManager<User> userManager; 
+
+        public UserClaimsTransformation(UserManager<User> userManager)
+        {
+            this.userManager = userManager;
+        }
+
+    public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
+    {
+        ClaimsIdentity claims = new ClaimsIdentity();
+
+        var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (id != null)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var userRoles = await userManager.GetRolesAsync(user);
+                foreach (var userRole in userRoles)
+                {
+                    claims.AddClaim(new Claim(ClaimTypes.Role, userRole));
+                }
+            }
+        }
+
+        principal.AddIdentity(claims);
+        return await Task.FromResult(principal);
     }
 
  }
