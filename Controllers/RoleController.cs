@@ -18,7 +18,7 @@ public class RoleController : ControllerBase
         this.roleManager = roleManager;
     }
 
-    [HttpPost("create")]
+    [HttpPost("create")]    // Borde ha en Authorize, men blir strul när andra tar ner projektet då användarna sparas lokalt och kan därmed inte tilldela en ny admin-roll.
     public async Task<string> CreateRole([FromQuery] string name)
     {
         await roleManager.CreateAsync(new IdentityRole(name));

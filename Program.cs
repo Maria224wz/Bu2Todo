@@ -27,7 +27,7 @@ public class Program
 
             options.AddPolicy("GetAllTodos", policy =>
             {
-                policy.RequireAuthenticatedUser();
+                policy.RequireAuthenticatedUser().RequireRole("admin");
             }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
 
             options.AddPolicy("Admin", policy =>
@@ -40,6 +40,10 @@ public class Program
                 policy.RequireAuthenticatedUser();
 
             });
+            options.AddPolicy("GetUserTodos", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+            }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
         });
 
         builder.Services.AddControllers(); // controllers för att hantera http androp
