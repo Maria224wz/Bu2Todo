@@ -32,7 +32,7 @@ public class Program
 
             options.AddPolicy("Admin", policy =>
             {
-                policy.RequireAuthenticatedUser();
+                policy.RequireAuthenticatedUser().RequireRole("admin");
             });
 
             options.AddPolicy("UserAddTodo", policy =>
@@ -63,7 +63,6 @@ public class Program
 
         app.Run();
     }
-
 
     public static void SetupSecurity(WebApplicationBuilder builder)
     {
