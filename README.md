@@ -12,12 +12,10 @@ TODO:
 1. DbContext // done
 2. Controllers ( In progress)
 3. Services
-4. Endpoints
+4. Endpoints // Skapa endpoints som är specifikt riktade mot användare (Egna listor för varje användare)
 5. Testing
 
 // Maria anteckningar
-// Lägga till user id till alla todos så man ser vilken user som är inloggad
-// roller
 // updatera todos httpPut
 // fler endpoints
 

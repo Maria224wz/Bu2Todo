@@ -100,7 +100,20 @@ public IActionResult GetUserTodos()
     //[AllowAnonymous]
     public List<TodoDto> GetAllTodos() // hämta alla todos
     {
-        return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList(); // hämta alla todos från db och konvertera dem som en dto
+        return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList();
+    }
+
+    [HttpGet("UserTodos")]
+    [Authorize("GetUserTodos")]
+    public List<TodoDto> GetUserTodos()
+    {
+        // Hämta användarens id från ClaimsPrincipal - genom claimtypes så läggs info om token värdet in som gör att man kan sedan hämta användarobjektet genom att komma åt id't.
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Hämta användarobjektet från databasen, letar efter anv id som kommer från claimtypes och tilldelas då att bli user, annars user not found
+        User? user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+        return null; // temporärt
     }
 
     [HttpDelete]
