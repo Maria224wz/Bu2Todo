@@ -20,3 +20,9 @@ TODO:
 // roller
 // updatera todos httpPut
 // fler endpoints
+
+// hämta lista med varje användares todos baserat på email 
+ 1. Varje användare loggar in med en email, och får då ett id -  
+ 2.  hämtar ut både email och id som är kopplade till varandra, och visar det. 
+ 3. hämtar ut och filterar alla tillhörande todos till ett specifikt id/email och visar dem.- Och eftersom det är inte bara en information den måste visa, så måste den skapas en egen dto för det som den då hämtar ut.
+ 

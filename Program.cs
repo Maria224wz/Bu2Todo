@@ -40,6 +40,12 @@ public class Program
                 policy.RequireAuthenticatedUser();
 
             });
+
+            options.AddPolicy("GetUserTodos", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+
+            });
         });
 
         builder.Services.AddControllers(); // controllers för att hantera http androp
