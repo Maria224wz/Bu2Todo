@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 
+
 [ApiController] // kolla route här
 [Route("todo/roles")]
 public class RoleController : ControllerBase
@@ -17,6 +18,7 @@ public class RoleController : ControllerBase
         this.userManager = userManager;
         this.roleManager = roleManager;
     }
+
 
     [HttpPost("create")]    // Borde ha en Authorize, men blir strul när andra tar ner projektet då användarna sparas lokalt och kan därmed inte tilldela en ny admin-roll.
     public async Task<string> CreateRole([FromQuery] string name)

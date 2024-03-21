@@ -40,6 +40,7 @@ public class Program
                 policy.RequireAuthenticatedUser();
 
             });
+          
             options.AddPolicy("GetUserTodos", policy =>
             {
                 policy.RequireAuthenticatedUser();

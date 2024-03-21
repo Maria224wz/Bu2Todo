@@ -7,7 +7,9 @@ public class ApplicationContext : IdentityDbContext<User> // app context klass s
 {
     public DbSet<Todo> Todos { get; set; }
     public DbSet<TodoList> TodoItems { get; set; }
+    
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+
 
 }
