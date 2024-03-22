@@ -73,48 +73,54 @@ public class TodoController : ControllerBase // ärver från controller base
 
     // // hämta todos baserat på användarens email kopplat till id. Och Lagt till policy i mainmetoden för get user todos
 
-    [HttpGet("users")]
+    [HttpGet("user")]
     [Authorize("GetUserTodos")]
     public IActionResult GetUserTodos()
     {
-        // Hämta alla användare från databasen
-        List<User> users = context.Users.Include(u => u.TodoItems).ToList();
+        // Hämta användarens id och e-postadress från ClaimsPrincipal
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-        // Skapa en lista av DTO:er för användar-ID, e-postadresser och todos
-        List<UserTodosDto> userTodosDtos = users.Select(user => new UserTodosDto
+        // Hämta bara den inloggade användarens todos
+        User? user = context.Users
+            .Include(u => u.TodoItems)
+            .FirstOrDefault(u => u.Id == userId && u.Email == userEmail);
+
+        if (user == null)
         {
-            UserEmail = new UserEmailDto
-            {
-                UserId = user.Id,
-                Email = user.Email
-            },
-            Todos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList()
-        }).ToList();
+            return NotFound("User not found");
+        }
 
-        return Ok(userTodosDtos); // Returnera listan med användar-ID, e-postadresser och todos
+
+        List<TodoDto> userTodos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList();
+
+        // Skapa ett objekt för att innehålla användarens ID, e-postadress och todos
+        var response = new
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            Todos = userTodos
+        };
+
+        return Ok(response); // Returnera användarens todos
     }
 
     [HttpDelete("UserDelete")]
     [Authorize("UserDeleteTodo")]
     public IActionResult UserDeleteTodo([FromQuery] string title)
     {
-        List<User> users = context.Users.Include(u => u.TodoItems).ToList();
+        // Hämta användarens id och e-postadress från ClaimsPrincipal
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-        List<UserTodosDto> userTodosDtos = users.Select(user => new UserTodosDto
-        {
-            UserEmail = new UserEmailDto
-            {
-                UserId = user.Id,
-                Email = user.Email
-            },
-            Todos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList()
-        }).ToList();
-
-        Todo? todo = context.Todos.FirstOrDefault(t => t.Title == title);
+        // Hämta bara den inloggade användarens todos
+        Todo? todo = context.Todos
+            .Include(t => t.User)
+            .FirstOrDefault(t => t.Title == title && t.User.Id == userId && t.User.Email == userEmail);
 
         if (todo == null)
         {
-            throw new Exception("Todo was null");
+            return NotFound("Todo not found");
         }
 
         context.Remove(todo);
