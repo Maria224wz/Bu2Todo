@@ -9,7 +9,7 @@ public class TodoService
     { // konstruktor som tar emot appcontext som berorende
         this.context = context; // tilldelar app context till variabeln context
     }
- 
+
     public Todo CreateTodos(string title, string description, string duedate) // skapa ny todo
     {
 
@@ -23,22 +23,21 @@ public class TodoService
             throw new Exception("Description cannot be null or whitespace!");
         }
 
-    //      // Hämta användaren från databasen baserat på användar-ID- där Users innehåller info automatiskt om användaren
-    //    User? user = context.Users.Find(User);
+        //      // Hämta användaren från databasen baserat på användar-ID- där Users innehåller info automatiskt om användaren
+        //    User? user = context.Users.Find(User);
 
-    // if (user == null)
-    // {
-    //     throw new ArgumentException("User not found!");
-    // }     
+        // if (user == null)
+        // {
+        //     throw new ArgumentException("User not found!");
+        // }     
 
         var todo = new Todo
         { // ny todo skapas med angivna uppgifter
             Title = title,
             Description = description,
             DueDate = duedate,
-            
-            
         };
+
         context.Todos.Add(todo); // lägg till nya i databasen
         //user.Todos.Add(todo); // Spara listan så att user kommer med i todo
         // context.user.Add(todo);

@@ -31,7 +31,7 @@ public class TodoController : ControllerBase // ärver från controller base
 
         // Hämta användarobjektet från databasen, letar efter anv id som kommer från claimtypes och tilldelas då att bli user, annars user not found
         User? user = context.Users.FirstOrDefault(u => u.Id == userId);
-         
+
 
 
         if (user == null)
@@ -71,29 +71,57 @@ public class TodoController : ControllerBase // ärver från controller base
         return Ok(new TodoDto(todo)); // ok med nya todo som en dto// Try catch felhantering?
     }
 
-// // hämta todos baserat på användarens email kopplat till id. Och Lagt till policy i mainmetoden för get user todos
+    // // hämta todos baserat på användarens email kopplat till id. Och Lagt till policy i mainmetoden för get user todos
 
-[HttpGet("users")]
-[Authorize("GetUserTodos")]
-public IActionResult GetUserTodos()
-{
-    // Hämta alla användare från databasen
-    List<User> users = context.Users.Include(u => u.TodoItems).ToList();
-
-    // Skapa en lista av DTO:er för användar-ID, e-postadresser och todos
-    List<UserTodosDto> userTodosDtos = users.Select(user => new UserTodosDto
+    [HttpGet("users")]
+    [Authorize("GetUserTodos")]
+    public IActionResult GetUserTodos()
     {
-        UserEmail = new UserEmailDto
+        // Hämta alla användare från databasen
+        List<User> users = context.Users.Include(u => u.TodoItems).ToList();
+
+        // Skapa en lista av DTO:er för användar-ID, e-postadresser och todos
+        List<UserTodosDto> userTodosDtos = users.Select(user => new UserTodosDto
         {
-            UserId = user.Id,
-            Email = user.Email
-        },
-        Todos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList()
-    }).ToList();
+            UserEmail = new UserEmailDto
+            {
+                UserId = user.Id,
+                Email = user.Email
+            },
+            Todos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList()
+        }).ToList();
 
-    return Ok(userTodosDtos); // Returnera listan med användar-ID, e-postadresser och todos
-}
+        return Ok(userTodosDtos); // Returnera listan med användar-ID, e-postadresser och todos
+    }
 
+    [HttpDelete("UserDelete")]
+    [Authorize("UserDeleteTodo")]
+    public IActionResult UserDeleteTodo([FromQuery] string title)
+    {
+        List<User> users = context.Users.Include(u => u.TodoItems).ToList();
+
+        List<UserTodosDto> userTodosDtos = users.Select(user => new UserTodosDto
+        {
+            UserEmail = new UserEmailDto
+            {
+                UserId = user.Id,
+                Email = user.Email
+            },
+            Todos = user.TodoItems.Select(todo => new TodoDto(todo)).ToList()
+        }).ToList();
+
+        Todo? todo = context.Todos.FirstOrDefault(t => t.Title == title);
+
+        if (todo == null)
+        {
+            throw new Exception("Todo was null");
+        }
+
+        context.Remove(todo);
+        context.SaveChanges();
+
+        return Ok("The todo was sucessfully removed");
+    }
 
     [HttpGet] // Hämtar alla oavsett user, lägg till authorization för admin
     [Authorize("GetAllTodos")]
@@ -101,19 +129,6 @@ public IActionResult GetUserTodos()
     public List<TodoDto> GetAllTodos() // hämta alla todos
     {
         return context.Todos.ToList().Select(todo => new TodoDto(todo)).ToList();
-    }
-
-    [HttpGet("UserTodos")]
-    [Authorize("GetUserTodos")]
-    public List<TodoDto> GetUserTodos()
-    {
-        // Hämta användarens id från ClaimsPrincipal - genom claimtypes så läggs info om token värdet in som gör att man kan sedan hämta användarobjektet genom att komma åt id't.
-        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        // Hämta användarobjektet från databasen, letar efter anv id som kommer från claimtypes och tilldelas då att bli user, annars user not found
-        User? user = context.Users.FirstOrDefault(u => u.Id == userId);
-
-        return null; // temporärt
     }
 
     [HttpDelete]
@@ -150,10 +165,10 @@ public IActionResult GetUserTodos()
     }
 
     public class UserEmailDto
-{
-    public string? UserId { get; set; }
-    public string? Email { get; set; }
-}
+    {
+        public string? UserId { get; set; }
+        public string? Email { get; set; }
+    }
 
 
     public class UserTodosDto

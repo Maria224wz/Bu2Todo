@@ -40,7 +40,13 @@ public class Program
                 policy.RequireAuthenticatedUser();
 
             });
-          
+
+            options.AddPolicy("UserDeleteTodo", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+            }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
+
+
             options.AddPolicy("GetUserTodos", policy =>
             {
                 policy.RequireAuthenticatedUser();
