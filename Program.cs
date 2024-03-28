@@ -20,15 +20,15 @@ public class Program
             );
         });
 
-        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme); // token autentifiering läggs till
+        builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
 
         builder.Services.AddAuthorization(options =>
-        { // autentiserings funktionalitet och konfiguerar behörighet
+        {
 
             options.AddPolicy("GetAllTodos", policy =>
             {
                 policy.RequireAuthenticatedUser().RequireRole("admin");
-            }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
+            });
 
             options.AddPolicy("Admin", policy =>
             {
@@ -44,44 +44,42 @@ public class Program
             options.AddPolicy("UserDeleteTodo", policy =>
             {
                 policy.RequireAuthenticatedUser();
-            }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
-
+            });
 
             options.AddPolicy("GetUserTodos", policy =>
             {
                 policy.RequireAuthenticatedUser();
-            }); // behörighetspolicy för att hämta alla todos och användaren måste vara autentiserad
+            });
+
+            options.AddPolicy("UserUpdateTodos", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+
+            });
         });
 
-        builder.Services.AddControllers(); // controllers för att hantera http androp
-
+        builder.Services.AddControllers();
         builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
 
-        SetupSecurity(builder); // konfigurera säkerhet 
+        SetupSecurity(builder);
         builder.Services.AddScoped<TodoService, TodoService>();
 
         var app = builder.Build();
-
         app.MapIdentityApi<User>();
-
         app.UseHttpsRedirection();
-
         app.UseAuthentication();
-        app.UseAuthorization(); // autentifiering och authentisering för behöringhetskontroller, authentication ska ligga först
-
-
+        app.UseAuthorization();
         app.MapControllers();
-
         app.Run();
     }
 
     public static void SetupSecurity(WebApplicationBuilder builder)
     {
         builder.Services
-            .AddIdentityCore<User>() // identity tjänster med user som användarklass
-            .AddRoles<IdentityRole>() // roll tjänster
-            .AddEntityFrameworkStores<ApplicationContext>() // lagra användarinfo
-            .AddApiEndpoints(); // api endpoints för identity funktioner
+            .AddIdentityCore<User>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationContext>()
+            .AddApiEndpoints();
     }
 }
 
@@ -115,5 +113,4 @@ public class UserClaimsTransformation : IClaimsTransformation
         principal.AddIdentity(claims);
         return await Task.FromResult(principal);
     }
-
 }
